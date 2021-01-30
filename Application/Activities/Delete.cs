@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
@@ -32,7 +33,7 @@ namespace Application.Activities
                 var activity = await context.Activities.FindAsync(request.Id);
                 if (activity == null)
                 {
-                    throw new Exception("Could not find activity");
+                    throw new RestExecption(HttpStatusCode.NotFound, new { activity = "not found" });
 
                 }
                 else

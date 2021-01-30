@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
@@ -26,6 +27,11 @@ namespace Application.Activities
             public async Task<Activity> Handle(query request, CancellationToken cancellationToken)
             {
                 var activity = await context.Activities.FindAsync(request.Id);
+                if (activity == null)
+                {
+                    throw new RestExecption(HttpStatusCode.NotFound, new { activity = "not found" });
+                }
+
 
                 return activity;
             }

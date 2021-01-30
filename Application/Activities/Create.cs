@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Domain;
 using MediatR;
 using Persistance;
+using FluentValidation;
 
 namespace Application.Activities
 {
@@ -25,6 +26,20 @@ namespace Application.Activities
 
         }
 
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Title).NotEmpty();
+                RuleFor(x => x.Description).NotEmpty();
+                RuleFor(x => x.Category).NotEmpty();
+                RuleFor(x => x.Date).NotEmpty();
+                RuleFor(x => x.City).NotEmpty();
+                RuleFor(x => x.Venue).NotEmpty();
+
+            }
+                    }
+
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext context;
@@ -40,15 +55,15 @@ namespace Application.Activities
                 {
                     Id = request.Id,
                     Title = request.Title,
-                    Description= request.Description,
-                    Date =request.Date,
-                    City =request.City,
+                    Description = request.Description,
+                    Date = request.Date,
+                    City = request.City,
                     Venue = request.Venue
 
                 };
                 context.Activities.Add(activity);
                 var success = await context.SaveChangesAsync() > 0;
-                if(success) return Unit.Value;
+                if (success) return Unit.Value;
                 throw new Exception("Problem Saving Changes");
 
             }
